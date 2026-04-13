@@ -1,272 +1,163 @@
-# 🧠 Jarvis-like Persistent AI Agent
+# 🧠 Jarvis - Sessionless AI Agent
 
-A sophisticated AI assistant with unified memory, RAG (Retrieval-Augmented Generation), and adaptive preferences. Unlike traditional chatbots that reset with each session, Jarvis maintains a continuous identity with persistent, intelligent memory.
+A persistent AI assistant that maintains a single identity across conversations using a unified memory system. Unlike traditional chatbots that reset with each session, Jarvis remembers conversations, user context, and adapts behavior accordingly.
 
-## 🎯 Project Goals
+## 📋 What It Does
 
-- **Sessionless**: Single identity that persists across conversations
-- **Intelligent Memory**: Retrieves relevant past information automatically
-- **Adaptive Learning**: Learns preferences and adapts behavior over time
-- **Knowledge Integration**: Supports RAG for enhanced context understanding
-- **Tool Integration**: Extensible system for future tools (web search, OCR, etc.)
+- **No Sessions**: Single identity that persists across all conversations
+- **Persistent Memory**: Automatically stores and retrieves conversation history
+- **Vector Search**: Uses embeddings to find relevant past interactions
+- **Stateful**: Maintains context without reinitializing
 
-## 🏗️ System Architecture
+## 🏗️ How It Works
 
-### 🧩 Three-Layer Storage System
-
-```
-┌─────────────────────────────────────────────┐
-│           PERSISTENCE LAYER                 │
-├─────────────────────────────────────────────┤
-│  SQLite        ChromaDB       MongoDB       │
-│  (Structure)   (Vectors)      (Semantics)   │
-└─────────────────────────────────────────────┘
-         ↓              ↓              ↓
-┌─────────────────────────────────────────────┐
-│         UNIFIED MEMORY SYSTEM               │
-└─────────────────────────────────────────────┘
-         ↓              ↓              ↓
-    Structured       Vector         Semantic
-    (Chat History) (Similarity)    (Preferences)
-```
-
-#### 1. 📋 **SQLite** (Structured Memory)
-- Chat history with full context
-- Message metadata (timestamps, user_id)
-- Transactional integrity
-
-#### 2. 🔍 **ChromaDB** (Vector Memory)
-- Embeddings of all messages
-- Similarity search for RAG retrieval
-- Semantic matching of historical context
-
-#### 3. 🧠 **MongoDB** (Semantic Memory)
-- User preferences and behaviors
-- Important long-term facts
-- Confidence scoring for learned patterns
-
-### 🔄 Data Flow
+### Three-Layer Storage
 
 ```
 User Input
-   ↓
-[Memory Check] → Do we need context?
-   ↓
-[RAG Retrieval] → Fetch similar past messages
-   ↓
-[Preferences] → Load user settings from MongoDB
-   ↓
-[Recent Chat] → Get last N messages from SQLite
-   ↓
-[Prompt Building] → Combine all context
-   ↓
-[LLM Response] → Generate intelligent response
-   ↓
-[Memory Update] → Store message + update embeddings
+    ↓
+[SQLite] - Store messages & metadata
+    ↓
+[ChromaDB] - Embed & index for search
+    ↓
+[Retrieve Context] - Find relevant past messages
+    ↓
+[LLM Response] - Generate response with context
+    ↓
+[Memory Update] - Save new interaction
 ```
 
-## ✅ Current Implementation Status
+1. **SQLite** - Chat history database
+   - Stores all messages with timestamps
+   - Maintains user identity
+   - Transaction support
 
-### ✔️ Completed
-- ✅ Persistent chat system (single user_id, no session reset)
-- ✅ SQLite integration for message storage
-- ✅ LLM integration (response generation)
-- ✅ ChromaDB setup with embeddings
-- ✅ Basic memory recall (system remembers user context)
-- ✅ .gitignore for sensitive files
+2. **ChromaDB** - Vector embeddings
+   - Converts messages to embeddings
+   - Enables similarity search
+   - Finds relevant past conversations
 
-### ⚠️ Not Yet Implemented
-- ❌ Intelligent RAG retrieval
-- ❌ Preference system (MongoDB integration)
-- ❌ Decay system for memory relevance
-- ❌ Tool system (extensible actions)
-- ❌ Document/OCR support
+3. **Anthropic Claude API** - Language model
+   - Processes queries with context
+   - Generates intelligent responses
 
-## 🚀 Implementation Roadmap
+## 🛠️ Tech Stack
 
-### 🔥 **PHASE 1** — RAG Integration (PRIORITY)
-Implement intelligent context retrieval
-- Embed user queries
-- Retrieve top-5 similar messages from ChromaDB
-- Format retrieved context for LLM prompt
-- **Outcome**: AI recalls relevant past conversations
-
-### 🧠 **PHASE 2** — MongoDB Integration
-Add structured preference and importance storage
-- `preferences` collection: learned user behaviors
-- `important_memory` collection: significant facts
-- **Outcome**: Personalized responses based on history
-
-### ⚙️ **PHASE 3** — Self-RAG Decision Layer
-Optimize when to retrieve memory
-- Keyword detection ("remember", "before", "last time")
-- LLM-based retrieval decisions
-- **Outcome**: Efficient memory usage
-
-### ⚖️ **PHASE 4** — Decay System
-Keep memory relevant over time
-- Score-based ranking
-- Exponential decay with refresh on usage
-- **Outcome**: Important memories stay accessible, noise fades
-
-### 🧰 **PHASE 5** — Tool System
-Enable agentic capabilities
-- Example: `delete_memory`, `web_search`
-- Extensible interface for future tools
-- **Outcome**: AI can perform actions beyond chat
-
-### 📄 **PHASE 6** — Document Memory
-Store documents as memory
-- File upload → text extraction → chunking → embedding
-- Treat as extended memory layer
-
-### 🖼️ **PHASE 7** — OCR Support
-Process images as memory
-- Extract text from images using Tesseract
-- Store as embedded knowledge
-
-### ⚡ **PHASE 8** — Performance Optimization
-- Parallel database operations
-- Query caching
-- Batch embedding
-
-### 🧠 **PHASE 9** — Intelligence Layer
-- Importance scoring algorithms
-- Chat summarization for long histories
-- Preference conflict resolution
-
-## 🛠️ Technology Stack
-
-- **Python 3.x**: Core language
-- **SQLite**: Structured message history
-- **ChromaDB**: Vector embeddings and similarity search
-- **MongoDB**: Semantic memory and preferences
-- **Anthropic Claude API**: LLM backbone
-- **Sentence Transformers**: Embedding generation
-
-## 📦 Installation
-
-```bash
-# Clone repository
-git clone https://github.com/Normal-repo/jarvis-sessionless-agent.git
-cd jarvis-sessionless-agent
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Set up environment
-cp .env.example .env
-# Edit .env with your API keys
-```
-
-## 🚀 Quick Start
-
-```bash
-# Run the agent
-python main.py
-
-# Example interaction
-> Tell me about your preferences
-> Remember I like short responses
-> Tell me about yourself
-```
+- **Python 3.x** - Core language
+- **SQLite** - Message storage
+- **ChromaDB** - Vector embeddings & search
+- **Anthropic Claude API** - LLM
+- **Sentence Transformers** - Embedding generation
 
 ## 📁 Project Structure
 
 ```
 jarvis-sessionless-agent/
-├── main.py              # Entry point
-├── model.py             # LLM integration
-├── embedding.py         # Vector embedding logic
-├── databases.py         # Database connections (SQLite, ChromaDB, MongoDB)
-├── tools.py             # Tool system (future)
-├── .gitignore          # Git ignore configuration
-└── README.md           # This file
+├── main.py          # Entry point & main loop
+├── model.py         # LLM integration (Claude API)
+├── embedding.py     # Embedding & similarity search
+├── databases.py     # Database connections (SQLite, ChromaDB)
+├── tools.py         # Tool system (extensible)
+└── README.md        # Documentation
 ```
 
-## 🔑 Key Concepts
+## 🔧 Key Features
 
-### Sessionless Design
-Instead of isolated sessions, the system maintains a unified `user_id` that persists all conversations. All memory operations reference this identity.
+### Persistent User ID
+```python
+user_id = "normal_001"  # Same across all sessions
+```
 
-### Intelligent RAG
-Rather than retrieving all context, the system:
-1. Embeds the current query
-2. Searches for semantically similar past messages
-3. Ranks by relevance and recency
-4. Includes only the most relevant context
+### Message Storage
+```python
+# Automatically saves every message
+# Includes: content, user_id, timestamp, role
+```
 
-### Adaptive Memory
-The system learns:
-- User preferences (style, tone, depth)
-- Important facts about the user
-- Patterns in conversation
+### Vector Search
+```python
+# Retrieves similar past messages
+# Used to build context for responses
+```
 
-Memory decays naturally—important memories stay fresh, irrelevant ones fade.
+### Tool System
+```python
+# tools.py structure for extensible actions
+# Ready for: delete_memory, web_search, etc.
+```
 
-## 🎓 Learning Outcomes
+## 📦 Installation
 
-Building this system teaches:
-- Multi-database architecture
-- Vector embeddings and semantic search
-- Agentic AI patterns
-- Memory management at scale
-- LLM prompt engineering
+```bash
+git clone https://github.com/Normal-repo/jarvis-sessionless-agent.git
+cd jarvis-sessionless-agent
 
-## 🤝 Contributing
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
-This is an active development project. Future contributions welcome for:
-- Additional storage backends
-- Tool implementations
-- Performance optimization
-- Advanced memory algorithms
+pip install -r requirements.txt
+```
 
-## 📊 Project Complexity
+## ⚙️ Environment Setup
 
-| Aspect | Rating |
-|--------|--------|
-| Complexity | ⭐⭐⭐⭐⭐ |
-| Innovation | ⭐⭐⭐⭐⭐ |
-| Practical Value | ⭐⭐⭐⭐⭐ |
+Create `.env` file:
+```
+ANTHROPIC_API_KEY=your_api_key_here
+CHROMA_DB_PATH=./chroma_data
+SQLITE_DB_PATH=./jarvis_chats.db
+USER_ID=normal_001
+```
 
-## 💡 What Makes This Different
+## 🚀 Running
 
-This is **not** a:
-- ❌ Chat session system
-- ❌ Simple RAG pipeline
-- ❌ Single-database solution
+```bash
+python main.py
+```
 
-This **is** a:
-- ✅ Persistent AI system with continuous identity
-- ✅ Unified memory architecture
-- ✅ Adaptive learning framework
-- ✅ Extensible agentic platform
+## 💾 Database Schema
 
-## 🧭 Next Steps
+### SQLite Messages Table
+```sql
+CREATE TABLE messages (
+    id INTEGER PRIMARY KEY,
+    user_id TEXT,
+    role TEXT,  -- "user" or "assistant"
+    content TEXT,
+    timestamp DATETIME,
+    embedding_id TEXT
+)
+```
 
-**START HERE:**
-1. Implement RAG retrieval (Phase 1)
-2. Integrate MongoDB for preferences (Phase 2)
-3. Add decision layer for smart memory usage (Phase 3)
+### ChromaDB Collections
+```
+Collection: "messages"
+- Stores embeddings of all messages
+- Enables similarity search
+```
 
-**DO NOT ADD YET:**
-- Tools/actions (implement foundation first)
-- OCR/documents (scale after core works)
-- Complex decay algorithms (start simple)
+## 🎯 Current Capabilities
+
+✅ Persistent chat without session resets
+✅ Message history storage
+✅ Vector similarity search
+✅ Context-aware responses
+✅ User identity persistence
+✅ Extensible tool framework
+
+## 🔮 Future Tools (Ready for Extension)
+
+The `tools.py` file is structured for adding:
+- Memory deletion
+- Preference learning  
+- Web search integration
+- Advanced filtering
+
+Tools can be added without modifying core system.
 
 ## 📝 License
 
-MIT License - See LICENSE file for details
+MIT License
 
 ## 👤 Author
 
-**Normal-repo** - Building the next generation of persistent AI
-
----
-
-**One-Line Summary:**
-*You've built the memory foundation. Now build the intelligence layer on top.*
+**Normal-repo** - Persistent AI Systems
